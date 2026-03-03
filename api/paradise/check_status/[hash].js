@@ -23,17 +23,18 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const hash = (req.query && (req.query.hash || req.query.hash?.[0])) || '';
-  if (!hash) {
+  // id = transaction_id retornado na criação (doc: query.php?action=get_transaction&id={id})
+  const transactionId = (req.query && (req.query.hash || req.query.hash?.[0])) || '';
+  if (!transactionId) {
     res.statusCode = 400;
     res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify({ error: { code: 'MISSING_HASH', message: 'Hash obrigatório.' } }));
+    res.end(JSON.stringify({ error: { code: 'MISSING_ID', message: 'ID da transação (transaction_id) obrigatório.' } }));
     return;
   }
 
   try {
-    const url = `https://multi.paradisepags.com/api/v1/check_status.php?hash=${encodeURIComponent(
-      hash
+    const url = `https://multi.paradisepags.com/api/v1/query.php?action=get_transaction&id=${encodeURIComponent(
+      transactionId
     )}`;
     const resp = await fetch(url, {
       method: 'GET',
@@ -48,8 +49,9 @@ module.exports = async (req, res) => {
     } catch (e) {
       json = { raw: text };
     }
-    const status = (json && (json.status || json.payment_status || json.state)) || 'pending';
-    if (status === 'paid') {
+    // Doc: status da transação = approved (pago), pending, etc.
+    const status = (json && json.status) || 'pending';
+    if (status === 'approved') {
       const response = { status: 'paid' };
       if (upsellUrl) {
         response.redirect_url = upsellUrl;

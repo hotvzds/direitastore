@@ -544,8 +544,13 @@
                 pixStatus.textContent = (data.error.message || 'Não foi possível gerar o Pix.') + ' Verifique a configuração na Vercel (PARADISE_API_KEY).';
                 return;
               }
-              if (!data || !data.ok || !data.externalId) {
+              if (!data || !data.ok) {
                 pixStatus.textContent = 'Não foi possível gerar o Pix. Tente novamente em instantes.';
+                return;
+              }
+              var pollId = data.transactionId || data.externalId;
+              if (!pollId) {
+                pixStatus.textContent = 'Resposta da API sem ID para consultar status.';
                 return;
               }
               var pix = data.pix || {};
@@ -567,7 +572,7 @@
                 pixStatus.textContent = 'Aguardando pagamento...';
               }
               openPixModal();
-              startPolling(data.externalId);
+              startPolling(pollId);
             })
             .catch(function (err) {
               if (trigger) trigger.disabled = false;

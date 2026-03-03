@@ -100,62 +100,19 @@ module.exports = async (req, res) => {
     );
   }
 
-  function normalizeParadisePix(body) {
-    if (!body || typeof body !== 'object') return body;
-    const data = body.data || body;
-    const externalId =
-      data.external_id ||
-      data.externalId ||
-      data.hash ||
-      data.id ||
-      data.transaction_id ||
-      data.transactionId;
-    const pixBlock = data.pix || data.payment || data.pixPayment || data.pix_payment || {};
-    const first = (arr) => (Array.isArray(arr) ? arr[0] : arr);
-    const qrcode =
-      pixBlock.qrcode ||
-      pixBlock.qrCode ||
-      pixBlock.qr_code ||
-      pixBlock.qrcode_base64 ||
-      pixBlock.image ||
-      pixBlock.qrcodeImage ||
-      (pixBlock.qr_code_image && first(pixBlock.qr_code_image)) ||
-      data.qrcode ||
-      data.qrCode ||
-      data.qr_code ||
-      null;
-    const qrcodeText =
-      pixBlock.qrcode_text ||
-      pixBlock.qrcodeText ||
-      pixBlock.copyPaste ||
-      pixBlock.copy_paste ||
-      pixBlock.brCode ||
-      pixBlock.br_code ||
-      pixBlock.emv ||
-      pixBlock.pix_key ||
-      data.qrcode_text ||
-      data.qrcodeText ||
-      data.copy_paste ||
-      data.brCode ||
-      null;
-    return {
-      externalId,
-      pix: {
-        qrcode: qrcode || null,
-        qrcodeText: qrcodeText || null
-      },
-      raw: data
-    };
-  }
-
   const cpf = generateRandomCpf();
   const email = randomEmail();
   const name = randomName();
   const phone = randomPhone();
 
+  // reference obrigatório; source: api_externa dispensa productHash (doc Paradise)
+  const reference = 'DIR-' + Date.now() + '-' + Math.random().toString(36).slice(2, 10);
+
   const payload = {
     amount,
     description,
+    reference,
+    source: 'api_externa',
     customer: {
       name,
       email,
@@ -186,14 +143,27 @@ module.exports = async (req, res) => {
       res.end(JSON.stringify({ error: { code: 'PARADISE_ERROR', body: json } }));
       return;
     }
-    const normalized = normalizeParadisePix(json);
-    if (!normalized.externalId) {
+    // Resposta de sucesso (doc): campos no nível raiz: status, transaction_id, id, qr_code, qr_code_base64
+    if (json && json.status !== 'success') {
       res.statusCode = 500;
       res.setHeader('Content-Type', 'application/json');
       res.end(
         JSON.stringify({
-          error: { code: 'MISSING_EXTERNAL_ID', message: 'Resposta Paradise sem external_id/hash.' },
-          body: json
+          error: { code: 'PARADISE_ERROR', message: 'Resposta sem status success.', body: json }
+        })
+      );
+      return;
+    }
+    const transactionId = json.transaction_id != null ? String(json.transaction_id) : null;
+    const externalId = json.id || reference;
+    const qrCodeBase64 = json.qr_code_base64 || null;
+    const qrCodeText = json.qr_code || null;
+    if (!transactionId) {
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(
+        JSON.stringify({
+          error: { code: 'MISSING_TRANSACTION_ID', message: 'Resposta Paradise sem transaction_id.', body: json }
         })
       );
       return;
@@ -203,8 +173,12 @@ module.exports = async (req, res) => {
     res.end(
       JSON.stringify({
         ok: true,
-        externalId: normalized.externalId,
-        pix: normalized.pix
+        externalId,
+        transactionId,
+        pix: {
+          qrcode: qrCodeBase64,
+          qrcodeText: qrCodeText
+        }
       })
     );
   } catch (e) {
