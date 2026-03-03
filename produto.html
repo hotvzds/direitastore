@@ -462,6 +462,10 @@
         }
         if (pixCopyBtn && pixText) {
           pixCopyBtn.addEventListener('click', function () {
+            if (!pixText.value || !pixText.value.trim()) {
+              pixStatus.textContent = 'Não há código Pix para copiar. Gere o Pix novamente.';
+              return;
+            }
             pixText.select();
             try {
               document.execCommand('copy');
@@ -477,7 +481,7 @@
           currentHash = hash;
           if (pollingTimer) clearInterval(pollingTimer);
           pollingTimer = setInterval(function () {
-            fetch('/api/paradise/check_status/' + encodeURIComponent(hash), {
+            fetch(window.location.origin + '/api/paradise/check_status/' + encodeURIComponent(hash), {
               method: 'GET',
               headers: { 'Accept': 'application/json' }
             })
@@ -517,7 +521,8 @@
           pixFallback.style.display = 'none';
           pixText.value = '';
 
-          fetch('/api/paradise/create_pix', {
+          var apiBase = window.location.origin;
+          fetch(apiBase + '/api/paradise/create_pix', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
             body: JSON.stringify({
@@ -525,9 +530,20 @@
               description: title
             })
           })
-            .then(function (r) { return r.json(); })
+            .then(function (r) {
+              if (!r.ok) {
+                return r.json().then(function (err) {
+                  throw new Error(err && err.error && err.error.message ? err.error.message : 'Erro ' + r.status);
+                });
+              }
+              return r.json();
+            })
             .then(function (data) {
               if (trigger) trigger.disabled = false;
+              if (data && data.error) {
+                pixStatus.textContent = (data.error.message || 'Não foi possível gerar o Pix.') + ' Verifique a configuração na Vercel (PARADISE_API_KEY).';
+                return;
+              }
               if (!data || !data.ok || !data.externalId) {
                 pixStatus.textContent = 'Não foi possível gerar o Pix. Tente novamente em instantes.';
                 return;
@@ -545,13 +561,17 @@
                 pixFallback.style.display = 'block';
               }
               pixText.value = qrText || '';
-              pixStatus.textContent = 'Aguardando pagamento...';
+              if (!qrImg && !qrText) {
+                pixStatus.textContent = 'Pix gerado, mas a API não retornou QR/código. Confira PARADISE_API_KEY e o formato da resposta da Paradise na Vercel.';
+              } else {
+                pixStatus.textContent = 'Aguardando pagamento...';
+              }
               openPixModal();
               startPolling(data.externalId);
             })
-            .catch(function () {
+            .catch(function (err) {
               if (trigger) trigger.disabled = false;
-              pixStatus.textContent = 'Erro ao gerar Pix. Tente novamente.';
+              pixStatus.textContent = err && err.message ? err.message : 'Erro ao gerar Pix. Tente novamente.';
             });
         }
 

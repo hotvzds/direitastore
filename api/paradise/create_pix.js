@@ -18,20 +18,23 @@ module.exports = async (req, res) => {
     return;
   }
 
-  // Lê o corpo JSON manualmente
-  const bodyText = await new Promise((resolve) => {
-    let data = '';
-    req.on('data', (chunk) => {
-      data += chunk;
+  // Lê o corpo JSON (Vercel pode injetar req.body; senão lê o stream)
+  let bodyReq = {};
+  if (req.body && typeof req.body === 'object') {
+    bodyReq = req.body;
+  } else {
+    const bodyText = await new Promise((resolve) => {
+      let data = '';
+      req.on('data', (chunk) => {
+        data += chunk;
+      });
+      req.on('end', () => resolve(data || '{}'));
     });
-    req.on('end', () => resolve(data || '{}'));
-  });
-
-  let bodyReq;
-  try {
-    bodyReq = JSON.parse(bodyText);
-  } catch (e) {
-    bodyReq = {};
+    try {
+      bodyReq = bodyText ? JSON.parse(bodyText) : {};
+    } catch (e) {
+      bodyReq = {};
+    }
   }
 
   const amountFromBody = Number(bodyReq.amountCents || 0);
@@ -100,23 +103,39 @@ module.exports = async (req, res) => {
   function normalizeParadisePix(body) {
     if (!body || typeof body !== 'object') return body;
     const data = body.data || body;
-    const externalId = data.external_id || data.externalId || data.hash || data.id;
-    const pixBlock = data.pix || data.payment || data.pixPayment || {};
+    const externalId =
+      data.external_id ||
+      data.externalId ||
+      data.hash ||
+      data.id ||
+      data.transaction_id ||
+      data.transactionId;
+    const pixBlock = data.pix || data.payment || data.pixPayment || data.pix_payment || {};
+    const first = (arr) => (Array.isArray(arr) ? arr[0] : arr);
     const qrcode =
       pixBlock.qrcode ||
       pixBlock.qrCode ||
+      pixBlock.qr_code ||
+      pixBlock.qrcode_base64 ||
       pixBlock.image ||
       pixBlock.qrcodeImage ||
+      (pixBlock.qr_code_image && first(pixBlock.qr_code_image)) ||
       data.qrcode ||
       data.qrCode ||
+      data.qr_code ||
       null;
     const qrcodeText =
       pixBlock.qrcode_text ||
       pixBlock.qrcodeText ||
       pixBlock.copyPaste ||
+      pixBlock.copy_paste ||
       pixBlock.brCode ||
+      pixBlock.br_code ||
+      pixBlock.emv ||
+      pixBlock.pix_key ||
       data.qrcode_text ||
       data.qrcodeText ||
+      data.copy_paste ||
       data.brCode ||
       null;
     return {
