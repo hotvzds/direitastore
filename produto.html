@@ -370,9 +370,10 @@
         var priceMain = document.getElementById('price-main');
         var priceInstallments = document.getElementById('price-installments');
         var base = 'R$ 99,90';
+        var amountCents = 9990;
         var lowerTitle = (title || '').toLowerCase();
         if (id.indexOf('bone_') === 0) {
-          base = 'R$ 79,90';
+          amountCents = 7990;
         } else if (id.indexOf('caneca_') === 0) {
           // Copos / garrafas térmicos identificados pelo título
           if (
@@ -381,26 +382,28 @@
             lowerTitle.indexOf('garrafa térmica') !== -1 ||
             lowerTitle.indexOf('garrafa termica') !== -1
           ) {
-            base = 'R$ 79,90';
+            amountCents = 7990;
           } else {
-            base = 'R$ 44,90';
+            amountCents = 4490;
           }
         } else if (id.indexOf('nike') === 0) {
           // Distribuição de preços para camisas de time (Nike)
           // Menos camisas no valor máximo (129,90)
           if (id === 'nike1' || id === 'nike4') {
-            base = 'R$ 129,90';
+            amountCents = 12990;
           } else if (id === 'nike2' || id === 'nike3') {
-            base = 'R$ 89,90';
+            amountCents = 8990;
           } else if (id === 'nike5') {
-            base = 'R$ 79,90';
+            amountCents = 7990;
           } else {
             // nike6, nike7 ou outros
-            base = 'R$ 69,90';
+            amountCents = 6990;
           }
         } else if (id.indexOf('mais_vendidos_') === 0) {
-          base = 'R$ 97,00';
+          amountCents = 9700;
         }
+        // converte amountCents -> texto base "R$ xx,xx"
+        base = 'R$ ' + (amountCents / 100).toFixed(2).replace('.', ',');
         priceMain.textContent = base;
         priceInstallments.innerHTML = 'em até 12x sem juros no cartão ou à vista no Pix com <strong>5% OFF</strong>.';
 
@@ -417,6 +420,9 @@
 
         document.getElementById('year').textContent = new Date().getFullYear();
 
+        // valor atual em centavos, usado para o PIX Paradise
+        window.__pixAmountCents = amountCents;
+
         // ==== PIX Paradise (One Click) ====
         var pixModal = document.getElementById('pix-modal');
         var pixClose = document.getElementById('pix-modal-close');
@@ -425,7 +431,8 @@
         var pixText = document.getElementById('pix-qrcode-text');
         var pixCopyBtn = document.getElementById('pix-copy-btn');
         var pixStatus = document.getElementById('pix-status');
-        var pixButton = document.querySelector('.btn-outline');
+        var pixButtonPix = document.querySelector('.btn-outline');
+        var pixButtonBuy = document.querySelector('.btn-primary');
         var pollingTimer = null;
         var currentHash = null;
 
@@ -477,15 +484,23 @@
               .then(function (r) { return r.json(); })
               .then(function (data) {
                 if (!data || !data.status) return;
-                if (data.status === 'paid' && data.redirect_url) {
+                if (data.status === 'paid') {
                   clearInterval(pollingTimer);
                   pollingTimer = null;
-                  var redirect = data.redirect_url;
-                  var qs = window.location.search;
-                  if (qs && qs.length > 1) {
-                    redirect += (redirect.indexOf('?') === -1 ? '?' : '&') + qs.slice(1);
+                  if (data.redirect_url) {
+                    var redirect = data.redirect_url;
+                    var qs = window.location.search;
+                    if (qs && qs.length > 1) {
+                      redirect += (redirect.indexOf('?') === -1 ? '?' : '&') + qs.slice(1);
+                    }
+                    window.location.href = redirect;
+                  } else {
+                    pixStatus.textContent = 'Pagamento confirmado com sucesso.';
+                    setTimeout(function () {
+                      closePixModal();
+                      window.location.reload();
+                    }, 1500);
                   }
-                  window.location.href = redirect;
                 }
               })
               .catch(function () {
@@ -494,48 +509,57 @@
           }, 3000);
         }
 
-        if (pixButton) {
-          pixButton.addEventListener('click', function () {
-            pixButton.disabled = true;
-            pixStatus.textContent = 'Gerando Pix, aguarde...';
-            pixImg.style.display = 'none';
-            pixFallback.style.display = 'none';
-            pixText.value = '';
+        function handlePixClick() {
+          var trigger = this;
+          if (trigger) trigger.disabled = true;
+          pixStatus.textContent = 'Gerando Pix, aguarde...';
+          pixImg.style.display = 'none';
+          pixFallback.style.display = 'none';
+          pixText.value = '';
 
-            fetch('/api/paradise/create_pix', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-              body: JSON.stringify({})
+          fetch('/api/paradise/create_pix', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({
+              amountCents: window.__pixAmountCents || 0,
+              description: title
             })
-              .then(function (r) { return r.json(); })
-              .then(function (data) {
-                pixButton.disabled = false;
-                if (!data || !data.ok || !data.externalId) {
-                  pixStatus.textContent = 'Não foi possível gerar o Pix. Tente novamente em instantes.';
-                  return;
-                }
-                var pix = data.pix || {};
-                var qrImg = pix.qrcode || null;
-                var qrText = pix.qrcodeText || '';
+          })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+              if (trigger) trigger.disabled = false;
+              if (!data || !data.ok || !data.externalId) {
+                pixStatus.textContent = 'Não foi possível gerar o Pix. Tente novamente em instantes.';
+                return;
+              }
+              var pix = data.pix || {};
+              var qrImg = pix.qrcode || null;
+              var qrText = pix.qrcodeText || '';
 
-                if (qrImg) {
-                  pixImg.src = qrImg;
-                  pixImg.style.display = 'block';
-                  pixFallback.style.display = 'none';
-                } else {
-                  pixImg.style.display = 'none';
-                  pixFallback.style.display = 'block';
-                }
-                pixText.value = qrText || '';
-                pixStatus.textContent = 'Aguardando pagamento...';
-                openPixModal();
-                startPolling(data.externalId);
-              })
-              .catch(function () {
-                pixButton.disabled = false;
-                pixStatus.textContent = 'Erro ao gerar Pix. Tente novamente.';
-              });
-          });
+              if (qrImg) {
+                pixImg.src = qrImg;
+                pixImg.style.display = 'block';
+                pixFallback.style.display = 'none';
+              } else {
+                pixImg.style.display = 'none';
+                pixFallback.style.display = 'block';
+              }
+              pixText.value = qrText || '';
+              pixStatus.textContent = 'Aguardando pagamento...';
+              openPixModal();
+              startPolling(data.externalId);
+            })
+            .catch(function () {
+              if (trigger) trigger.disabled = false;
+              pixStatus.textContent = 'Erro ao gerar Pix. Tente novamente.';
+            });
+        }
+
+        if (pixButtonPix) {
+          pixButtonPix.addEventListener('click', handlePixClick);
+        }
+        if (pixButtonBuy) {
+          pixButtonBuy.addEventListener('click', handlePixClick);
         }
       })();
     </script>
