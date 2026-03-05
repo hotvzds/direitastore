@@ -1,0 +1,1016 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <title>Produto | Loja Brasil</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="./assets/images/logo.jpg">
+    <style>
+      :root {
+        --bg-page: #ffffff;
+        --bg-card: #f5f5f5;
+        --border-card: #e2e2e2;
+        --accent: #0043D0;
+        --accent-soft: #e5f0ff;
+        --text-main: #111111;
+        --text-muted: #555555;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: var(--bg-page);
+        color: var(--text-main);
+      }
+      header {
+        border-bottom: 1px solid #eeeeee;
+        background: #ffffff;
+      }
+      .header-inner {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .header-logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .header-logo img {
+        height: 36px;
+        width: auto;
+      }
+      .header-actions a {
+        font-size: 13px;
+        color: var(--accent);
+        text-decoration: none;
+      }
+      main {
+        max-width: 1120px;
+        margin: 24px auto 40px;
+        padding: 0 16px;
+      }
+      .breadcrumb {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-bottom: 16px;
+      }
+      .breadcrumb a {
+        color: var(--text-muted);
+        text-decoration: none;
+      }
+      .breadcrumb a:hover {
+        text-decoration: underline;
+      }
+      .product-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+        gap: 32px;
+        align-items: flex-start;
+      }
+      .product-media {
+        background: var(--bg-card);
+        border-radius: 16px;
+        border: 1px solid var(--border-card);
+        padding: 16px;
+      }
+      .product-media-inner {
+        border-radius: 12px;
+        overflow: hidden;
+        background: #ffffff;
+      }
+      .product-media-inner img {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: cover;
+      }
+      .thumb-strip {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .thumb {
+        flex: 0 0 56px;
+        height: 56px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #dddddd;
+        background: #fff;
+      }
+      .thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .product-info {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .product-title {
+        font-size: 22px;
+        font-weight: 600;
+        line-height: 1.25;
+      }
+      .product-tagline {
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+      .price-box {
+        padding: 14px 16px;
+        border-radius: 12px;
+        background: var(--accent-soft);
+        border: 1px solid rgba(0,67,208,0.15);
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .price-main {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--accent);
+      }
+      .price-installments {
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+      .payment-box {
+        padding: 14px 16px;
+        border-radius: 12px;
+        border: 1px solid var(--border-card);
+        background: #ffffff;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .payment-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 13px;
+      }
+      .payment-label {
+        font-weight: 500;
+      }
+      .payment-highlight {
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .cta-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 16px;
+        border-radius: 999px;
+        border: none;
+        background: #111111;
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      .btn-outline {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 9px 16px;
+        border-radius: 999px;
+        border: 1px solid var(--border-card);
+        background: #ffffff;
+        color: var(--text-main);
+        font-size: 13px;
+        cursor: pointer;
+      }
+      .security-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 4px;
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+      .badge {
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #f0f0f0;
+        font-size: 11px;
+      }
+      .details {
+        margin-top: 24px;
+        border-top: 1px solid #eeeeee;
+        padding-top: 16px;
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+      .details h3 {
+        font-size: 14px;
+        margin: 0 0 6px;
+        color: var(--text-main);
+      }
+      footer {
+        border-top: 1px solid #eeeeee;
+        padding: 16px;
+        font-size: 12px;
+        color: var(--text-muted);
+        text-align: center;
+      }
+      @media (max-width: 768px) {
+        .product-layout {
+          grid-template-columns: minmax(0,1fr);
+          gap: 20px;
+        }
+        .header-inner {
+          padding-inline: 12px;
+        }
+        main {
+          padding-inline: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-inner">
+        <div class="header-logo">
+          <a href="/cuidadoconelperro/">
+            <img src="./assets/images/logo.jpg" alt="Loja Brasil">
+          </a>
+        </div>
+        <div class="header-actions">
+          <a href="/cuidadoconelperro/">Voltar para a loja</a>
+        </div>
+      </div>
+    </header>
+    <main>
+      <nav class="breadcrumb">
+        <a href="/cuidadoconelperro/">Início</a> &nbsp;/&nbsp;
+        <span id="breadcrumb-product">Produto</span>
+      </nav>
+      <section class="product-layout">
+        <div class="product-media">
+          <div class="product-media-inner">
+            <img id="product-image" src="" alt="">
+          </div>
+          <div class="thumb-strip">
+            <div class="thumb"><img id="thumb-main" src="" alt=""></div>
+          </div>
+        </div>
+        <div class="product-info">
+          <div>
+            <h1 id="product-title" class="product-title">Produto</h1>
+            <div id="product-tagline" class="product-tagline">Produto exclusivo da coleção Brasil.</div>
+          </div>
+          <div class="price-box">
+            <div id="price-main" class="price-main">R$ 0,00</div>
+            <div id="price-installments" class="price-installments">
+              em até 12x sem juros no cartão ou à vista no Pix com <strong>5% OFF</strong>.
+            </div>
+          </div>
+          <div class="payment-box">
+            <div class="payment-row">
+              <span class="payment-label">Pix imediato</span>
+              <span class="payment-highlight">aproveite 5% de desconto</span>
+            </div>
+            <div class="payment-row">
+              <span class="payment-label">Cartão de crédito</span>
+              <span>parcele em até 12x sem juros</span>
+            </div>
+            <div class="payment-row">
+              <span class="payment-label">Boleto bancário</span>
+              <span>compensação em até 2 dias úteis</span>
+            </div>
+            <div class="cta-group">
+              <button class="btn-primary" type="button">Comprar agora</button>
+              <div class="security-row">
+                <span class="badge">Pagamento seguro</span>
+                <span>Ambiente protegido e criptografado.</span>
+              </div>
+            </div>
+          </div>
+          <div class="details">
+            <h3>Descrição</h3>
+            <p id="product-description">
+              Produto com estampa exclusiva, ideal para quem apoia o Brasil todos os dias. Tecidos e materiais
+              selecionados para máximo conforto e durabilidade.
+            </p>
+            <div id="nike-original" style="margin-top: 8px; font-size: 12px; display: none;">
+              <a id="nike-original-link" href="#" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">
+                Ver produto original na Nike
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal PIX Paradise -->
+    <div id="pix-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: none; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(2px);">
+      <div style="background: #ffffff; border-radius: 18px; padding: 18px 20px 16px; max-width: 420px; width: 100%; box-shadow: 0 20px 55px rgba(15,23,42,0.18); position: relative; color: #111827; border: 1px solid #e5e7eb;">
+        <button id="pix-modal-close" type="button" style="position: absolute; top: 12px; right: 12px; border: none; background: transparent; cursor: pointer; font-size: 16px; line-height: 1; color: #6b7280;">×</button>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; gap: 10px;">
+          <div>
+            <h2 style="font-size: 17px; margin: 0 0 4px;">Finalize com Pix</h2>
+            <p style="font-size: 12px; margin: 0; color: #6b7280;">Pagamento instantâneo, seguro e aprovado em segundos.</p>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+            <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #6b7280;">Pagamento seguro</span>
+            <span style="font-size: 10px; padding: 2px 8px; border-radius: 999px; border: 1px solid #d1d5db; color: #111827; background: #f9fafb;">Protegido pela Paradise</span>
+          </div>
+        </div>
+        <div id="pix-summary" style="margin: 0 0 12px; padding: 10px 12px; border-radius: 12px; background: #f9fafb; border: 1px solid #e5e7eb; font-size: 12px; color: #111827;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+            <span>Produto</span>
+            <span id="pix-summary-product">R$ 0,00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span>Frete</span>
+            <span id="pix-summary-freight">R$ 0,00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 2px; font-size: 13px;">
+            <span>Total a pagar</span>
+            <span id="pix-summary-total">R$ 0,00</span>
+          </div>
+          <div id="pix-summary-security" style="font-size: 11px; color: #6b7280; margin-top: 4px; display: flex; align-items: center; gap: 6px;">
+            <span style="width: 6px; height: 6px; border-radius: 999px; background: #22c55e; box-shadow: 0 0 0 4px rgba(34,197,94,0.2);"></span>
+            <span>Pagamento 100% seguro via Pix, processado pela Paradise.</span>
+          </div>
+        </div>
+        <p style="font-size: 12px; margin: 0 0 10px; color: #6b7280;">Escaneie o QR Code abaixo ou copie o código Pix copia e cola para concluir o pagamento.</p>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 8px;">
+          <div id="pix-qrcode-wrapper" style="width: 220px; height: 220px; border-radius: 16px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #e5e7eb;">
+            <img id="pix-qrcode-img" src="" alt="QR Code Pix" style="max-width: 100%; max-height: 100%; display: none;">
+            <span id="pix-qrcode-fallback" style="font-size: 12px; color: #9ca3af; display: none;">QR Code indisponível</span>
+          </div>
+          <div style="width: 100%;">
+            <textarea id="pix-qrcode-text" readonly style="width: 100%; min-height: 72px; font-size: 11px; padding: 8px 10px; border-radius: 10px; border: 1px solid #e5e7eb; resize: none; background: #f9fafb; color: #111827;"></textarea>
+          </div>
+          <button id="pix-copy-btn" type="button" style="margin-top: 4px; padding: 7px 14px; border-radius: 999px; border: 1px solid #111827; background: #111827; font-size: 12px; cursor: pointer; color: #ffffff; display: inline-flex; align-items: center; gap: 6px;">
+            <span>Copiar código Pix</span>
+          </button>
+          <div id="pix-status" style="font-size: 12px; color: #6b7280; margin-top: 4px; text-align: center;">Aguardando pagamento...</div>
+        </div>
+        <p style="font-size: 11px; margin: 0; color: #9ca3af; text-align: center;">Após a confirmação do pagamento você será redirecionado automaticamente.</p>
+      </div>
+    </div>
+
+    <!-- Modal Simulação de Entrega -->
+    <div id="delivery-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: none; align-items: center; justify-content: center; z-index: 9998;">
+      <div style="background: #ffffff; border-radius: 16px; padding: 20px 20px 18px; max-width: 420px; width: 100%; box-shadow: 0 18px 45px rgba(0,0,0,0.25); position: relative; font-size: 13px;">
+        <button id="delivery-modal-close" type="button" style="position: absolute; top: 10px; right: 10px; border: none; background: transparent; cursor: pointer; font-size: 16px; line-height: 1;">×</button>
+        <div id="delivery-step-user" style="display: block;">
+          <h2 style="font-size: 16px; margin: 0 0 6px;">Cadastro rápido</h2>
+          <p style="margin: 0 0 14px; color: #555;">Preencha seus dados para continuar a simulação de entrega.</p>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <label style="display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-size: 12px; color: #333;">Nome completo</span>
+              <input id="delivery-name" type="text" placeholder="Digite seu nome completo" style="padding: 8px 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 13px;">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-size: 12px; color: #333;">CPF</span>
+              <input id="delivery-cpf" type="text" placeholder="000.000.000-00" maxlength="14" style="padding: 8px 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 13px;">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-size: 12px; color: #333;">Número de celular</span>
+              <input id="delivery-phone" type="text" placeholder="(00) 00000-0000" maxlength="15" style="padding: 8px 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 13px;">
+            </label>
+          </div>
+          <div id="delivery-user-error" style="margin-top: 8px; font-size: 12px; color: #c53030; display: none;">Preencha todos os campos corretamente para continuar.</div>
+          <button id="delivery-next" type="button" style="margin-top: 14px; width: 100%; padding: 10px 14px; border-radius: 999px; border: none; background: #111111; color: #ffffff; font-size: 14px; font-weight: 500; cursor: pointer;">
+            Continuar
+          </button>
+        </div>
+        <div id="delivery-step-simulation" style="display: none;">
+          <h2 style="font-size: 16px; margin: 0 0 6px;">Simulação de entrega</h2>
+          <p style="margin: 0 0 10px; color: #555;">Com base nos seus dados, simule prazos e opções de envio.</p>
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px;">
+            <label style="display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-size: 12px; color: #333;">CEP de entrega</span>
+              <input id="delivery-cep" type="text" placeholder="00000-000" maxlength="9" style="padding: 8px 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 13px;">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-size: 12px; color: #333;">Endereço</span>
+              <input id="delivery-street" type="text" placeholder="Rua / Avenida" style="padding: 8px 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 13px;">
+            </label>
+            <div style="display: flex; gap: 8px;">
+              <label style="flex: 0 0 80px; display: flex; flex-direction: column; gap: 4px;">
+                <span style="font-size: 12px; color: #333;">Número</span>
+                <input id="delivery-number" type="text" placeholder="Nº" style="padding: 8px 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 13px;">
+              </label>
+              <label style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                <span style="font-size: 12px; color: #333;">Complemento (opcional)</span>
+                <input id="delivery-complement" type="text" placeholder="Apartamento, bloco, referência..." style="padding: 8px 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 13px;">
+              </label>
+            </div>
+            <label style="display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-size: 12px; color: #333;">Bairro</span>
+              <input id="delivery-neighborhood" type="text" placeholder="Bairro" style="padding: 8px 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 13px;">
+            </label>
+            <div style="display: flex; gap: 8px;">
+              <label style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                <span style="font-size: 12px; color: #333;">Cidade</span>
+                <input id="delivery-city" type="text" placeholder="Cidade" style="padding: 8px 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 13px;">
+              </label>
+              <label style="flex: 0 0 72px; display: flex; flex-direction: column; gap: 4px;">
+                <span style="font-size: 12px; color: #333;">UF</span>
+                <input id="delivery-state" type="text" placeholder="UF" maxlength="2" style="padding: 8px 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 13px; text-transform: uppercase;">
+              </label>
+            </div>
+          </div>
+          <div id="delivery-address-error" style="font-size: 12px; color: #c53030; margin-bottom: 8px; display: none;">
+            Preencha todos os campos obrigatórios de endereço para simular a entrega.
+          </div>
+          <button id="delivery-finish" type="button" style="width: 100%; padding: 10px 14px; border-radius: 999px; border: none; background: #0043D0; color: #ffffff; font-size: 14px; font-weight: 500; cursor: pointer;">
+            Simular entrega
+          </button>
+          <div id="delivery-shipping-options" style="margin-top: 12px; padding: 10px 12px; border-radius: 10px; border: 1px solid #e2e2e2; background: #f9fafb; font-size: 13px; display: none;">
+            <div style="margin-bottom: 6px; font-weight: 500; color: #111;">Opções de entrega simuladas</div>
+            <label style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px; cursor: pointer;">
+              <input id="delivery-shipping-standard-choice" type="radio" name="delivery-shipping-choice" style="margin: 0;">
+              <span id="delivery-shipping-standard" style="color: #333;"></span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input id="delivery-shipping-express-choice" type="radio" name="delivery-shipping-choice" style="margin: 0;">
+              <span id="delivery-shipping-express" style="color: #333;"></span>
+            </label>
+            <div id="delivery-shipping-choice-error" style="margin-top: 6px; font-size: 12px; color: #c53030; display: none;">
+              Selecione uma opção de entrega para continuar.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <span>© <span id="year"></span> Loja Brasil. Todos os direitos reservados.</span>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@master/qrcode.min.js"></script>
+    <script>
+      (function () {
+        function getParam(name) {
+          var params = new URLSearchParams(window.location.search);
+          return params.get(name) || '';
+        }
+        var id = getParam('id');
+        var title = getParam('title') || 'Produto';
+        var img = getParam('img') || '';
+        var nikeParam = getParam('nike');
+
+        var imageEl = document.getElementById('product-image');
+        var thumbEl = document.getElementById('thumb-main');
+        var titleEl = document.getElementById('product-title');
+        var breadcrumbEl = document.getElementById('breadcrumb-product');
+
+        if (img) {
+          imageEl.src = img;
+          imageEl.alt = title;
+          thumbEl.src = img;
+          thumbEl.alt = title;
+        } else {
+          imageEl.alt = 'Produto';
+        }
+        titleEl.textContent = title;
+        breadcrumbEl.textContent = title;
+
+        // Regra simples de preço por categoria, a partir do id e do título
+        var priceMain = document.getElementById('price-main');
+        var priceInstallments = document.getElementById('price-installments');
+        var base = 'R$ 99,90';
+        var amountCents = 9990;
+        var lowerTitle = (title || '').toLowerCase();
+        if (id.indexOf('bone_') === 0) {
+          amountCents = 7990;
+        } else if (id.indexOf('caneca_') === 0) {
+          // Copos / garrafas térmicos identificados pelo título
+          if (
+            lowerTitle.indexOf('copo térmico') !== -1 ||
+            lowerTitle.indexOf('copo termico') !== -1 ||
+            lowerTitle.indexOf('garrafa térmica') !== -1 ||
+            lowerTitle.indexOf('garrafa termica') !== -1
+          ) {
+            amountCents = 7990;
+          } else {
+            amountCents = 4490;
+          }
+        } else if (id.indexOf('nike') === 0) {
+          // Distribuição de preços para camisas de time (Nike)
+          // Menos camisas no valor máximo (129,90)
+          if (id === 'nike1' || id === 'nike4') {
+            amountCents = 12990;
+          } else if (id === 'nike2' || id === 'nike3') {
+            amountCents = 8990;
+          } else if (id === 'nike5') {
+            amountCents = 7990;
+          } else {
+            // nike6, nike7 ou outros
+            amountCents = 6990;
+          }
+        } else if (id.indexOf('mais_vendidos_') === 0) {
+          amountCents = 9700;
+        }
+        function formatBRL(cents) {
+          return 'R$ ' + (cents / 100).toFixed(2).replace('.', ',');
+        }
+
+        // converte amountCents -> texto base "R$ xx,xx"
+        base = formatBRL(amountCents);
+        priceMain.textContent = base;
+        priceInstallments.innerHTML = 'em até 12x sem juros no cartão ou à vista no Pix com <strong>5% OFF</strong>.';
+
+        // Link opcional para o produto original da Nike
+        if (nikeParam) {
+          var nikeHref = decodeURIComponent(nikeParam);
+          var nikeBox = document.getElementById('nike-original');
+          var nikeLink = document.getElementById('nike-original-link');
+          if (nikeHref && nikeBox && nikeLink) {
+            nikeBox.style.display = 'block';
+            nikeLink.href = nikeHref;
+          }
+        }
+
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // valores atuais em centavos (produto, frete, total), usados para o PIX Paradise
+        var productAmountCents = amountCents;
+        var freightAmountCents = 0;
+        var totalAmountCents = amountCents;
+        window.__pixAmountCents = totalAmountCents;
+
+        // ==== PIX Paradise (One Click) ====
+        var pixModal = document.getElementById('pix-modal');
+        var pixClose = document.getElementById('pix-modal-close');
+        var pixImg = document.getElementById('pix-qrcode-img');
+        var pixFallback = document.getElementById('pix-qrcode-fallback');
+        var pixText = document.getElementById('pix-qrcode-text');
+        var pixCopyBtn = document.getElementById('pix-copy-btn');
+        var pixStatus = document.getElementById('pix-status');
+        var pixSummaryProduct = document.getElementById('pix-summary-product');
+        var pixSummaryFreight = document.getElementById('pix-summary-freight');
+        var pixSummaryTotal = document.getElementById('pix-summary-total');
+        var pixButtonPix = document.querySelector('.btn-outline');
+        var pixButtonBuy = document.querySelector('.btn-primary');
+        var pollingTimer = null;
+        var currentHash = null;
+
+        if (pixSummaryProduct && pixSummaryFreight && pixSummaryTotal) {
+          pixSummaryProduct.textContent = formatBRL(productAmountCents);
+          pixSummaryFreight.textContent = formatBRL(freightAmountCents);
+          pixSummaryTotal.textContent = formatBRL(totalAmountCents);
+        }
+
+        function openPixModal() {
+          pixModal.style.display = 'flex';
+        }
+        function closePixModal() {
+          pixModal.style.display = 'none';
+          if (pollingTimer) {
+            clearInterval(pollingTimer);
+            pollingTimer = null;
+          }
+          currentHash = null;
+        }
+
+        if (pixClose) {
+          pixClose.addEventListener('click', function () {
+            closePixModal();
+          });
+        }
+        if (pixModal) {
+          pixModal.addEventListener('click', function (e) {
+            if (e.target === pixModal) {
+              closePixModal();
+            }
+          });
+        }
+        if (pixCopyBtn && pixText) {
+          pixCopyBtn.addEventListener('click', function () {
+            if (!pixText.value || !pixText.value.trim()) {
+              pixStatus.textContent = 'Não há código Pix para copiar. Gere o Pix novamente.';
+              return;
+            }
+            pixText.select();
+            try {
+              document.execCommand('copy');
+              pixStatus.textContent = 'Código Pix copiado. Aguarde a confirmação do pagamento.';
+            } catch (_) {
+              pixStatus.textContent = 'Não foi possível copiar automaticamente. Copie manualmente o código Pix.';
+            }
+          });
+        }
+
+        function startPolling(hash) {
+          if (!hash) return;
+          currentHash = hash;
+          if (pollingTimer) clearInterval(pollingTimer);
+          pollingTimer = setInterval(function () {
+            fetch(window.location.origin + '/api/paradise/check_status/' + encodeURIComponent(hash), {
+              method: 'GET',
+              headers: { 'Accept': 'application/json' }
+            })
+              .then(function (r) { return r.json(); })
+              .then(function (data) {
+                if (!data || !data.status) return;
+                if (data.status === 'paid') {
+                  clearInterval(pollingTimer);
+                  pollingTimer = null;
+                  if (data.redirect_url) {
+                    var redirect = data.redirect_url;
+                    var qs = window.location.search;
+                    if (qs && qs.length > 1) {
+                      redirect += (redirect.indexOf('?') === -1 ? '?' : '&') + qs.slice(1);
+                    }
+                    window.location.href = redirect;
+                  } else {
+                    pixStatus.textContent = 'Pagamento confirmado com sucesso.';
+                    setTimeout(function () {
+                      closePixModal();
+                      window.location.reload();
+                    }, 1500);
+                  }
+                }
+              })
+              .catch(function () {
+                // silencioso
+              });
+          }, 3000);
+        }
+
+        function handlePixClick() {
+          var trigger = this;
+          if (trigger) trigger.disabled = true;
+          pixStatus.textContent = 'Gerando Pix, aguarde...';
+          pixImg.style.display = 'none';
+          pixFallback.style.display = 'none';
+          pixText.value = '';
+
+          var apiBase = window.location.origin;
+          fetch(apiBase + '/api/paradise/create_pix', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({
+              amountCents: window.__pixAmountCents || 0,
+              description: title
+            })
+          })
+            .then(function (r) {
+              if (!r.ok) {
+                return r.json().then(function (err) {
+                  throw new Error(err && err.error && err.error.message ? err.error.message : 'Erro ' + r.status);
+                });
+              }
+              return r.json();
+            })
+            .then(function (data) {
+              if (trigger) trigger.disabled = false;
+              if (data && data.error) {
+                pixStatus.textContent = (data.error.message || 'Não foi possível gerar o Pix.') + ' Verifique a configuração na Vercel (PARADISE_API_KEY).';
+                return;
+              }
+              if (!data || !data.ok) {
+                pixStatus.textContent = 'Não foi possível gerar o Pix. Tente novamente em instantes.';
+                return;
+              }
+              var pollId = data.transactionId || data.externalId;
+              if (!pollId) {
+                pixStatus.textContent = 'Resposta da API sem ID para consultar status.';
+                return;
+              }
+              var pix = data.pix || {};
+              var qrImg = pix.qrcode || null;
+              var qrText = pix.qrcodeText || '';
+
+              pixText.value = qrText || '';
+
+              if (qrImg) {
+                pixImg.src = qrImg;
+                pixImg.style.display = 'block';
+                pixFallback.style.display = 'none';
+              } else if (qrText && typeof QRCode !== 'undefined') {
+                var tempDiv = document.createElement('div');
+                tempDiv.style.cssText = 'position:absolute;left:-9999px;width:220px;height:220px;';
+                document.body.appendChild(tempDiv);
+                try {
+                  new QRCode(tempDiv, { text: qrText, width: 220, height: 220, colorDark: '#000000', colorLight: '#ffffff' });
+                  var applyGeneratedQr = function () {
+                    var genImg = tempDiv.querySelector('img');
+                    if (genImg && genImg.src) {
+                      pixImg.src = genImg.src;
+                      pixImg.style.display = 'block';
+                      pixFallback.style.display = 'none';
+                    } else {
+                      pixImg.style.display = 'none';
+                      pixFallback.style.display = 'block';
+                    }
+                    if (tempDiv.parentNode) {
+                      document.body.removeChild(tempDiv);
+                    }
+                  };
+                  setTimeout(applyGeneratedQr, 50);
+                } catch (e) {
+                  pixImg.style.display = 'none';
+                  pixFallback.style.display = 'block';
+                  if (tempDiv.parentNode) {
+                    document.body.removeChild(tempDiv);
+                  }
+                }
+              } else {
+                pixImg.style.display = 'none';
+                pixFallback.style.display = 'block';
+              }
+
+              if (!qrImg && !qrText) {
+                pixStatus.textContent = 'Pix gerado, mas a API não retornou QR/código. Confira PARADISE_API_KEY e o formato da resposta da Paradise na Vercel.';
+              } else {
+                pixStatus.textContent = 'Aguardando pagamento...';
+              }
+              openPixModal();
+              startPolling(pollId);
+            })
+            .catch(function (err) {
+              if (trigger) trigger.disabled = false;
+              pixStatus.textContent = err && err.message ? err.message : 'Erro ao gerar Pix. Tente novamente.';
+            });
+        }
+
+        if (pixButtonPix) {
+          pixButtonPix.addEventListener('click', handlePixClick);
+        }
+
+        // ==== Fluxo de simulação de entrega (botão "Comprar agora") ====
+        var deliveryModal = document.getElementById('delivery-modal');
+        var deliveryClose = document.getElementById('delivery-modal-close');
+        var deliveryStepUser = document.getElementById('delivery-step-user');
+        var deliveryStepSimulation = document.getElementById('delivery-step-simulation');
+        var deliveryName = document.getElementById('delivery-name');
+        var deliveryCpf = document.getElementById('delivery-cpf');
+        var deliveryPhone = document.getElementById('delivery-phone');
+        var deliveryCep = document.getElementById('delivery-cep');
+        var deliveryStreet = document.getElementById('delivery-street');
+        var deliveryNumber = document.getElementById('delivery-number');
+        var deliveryComplement = document.getElementById('delivery-complement');
+        var deliveryNeighborhood = document.getElementById('delivery-neighborhood');
+        var deliveryCity = document.getElementById('delivery-city');
+        var deliveryState = document.getElementById('delivery-state');
+        var deliveryNext = document.getElementById('delivery-next');
+        var deliveryFinish = document.getElementById('delivery-finish');
+        var deliveryError = document.getElementById('delivery-user-error');
+        var deliveryAddressError = document.getElementById('delivery-address-error');
+        var deliveryShippingBox = document.getElementById('delivery-shipping-options');
+        var deliveryShippingStandard = document.getElementById('delivery-shipping-standard');
+        var deliveryShippingExpress = document.getElementById('delivery-shipping-express');
+        var deliveryShippingStandardChoice = document.getElementById('delivery-shipping-standard-choice');
+        var deliveryShippingExpressChoice = document.getElementById('delivery-shipping-express-choice');
+        var deliveryShippingChoiceError = document.getElementById('delivery-shipping-choice-error');
+        var deliveryShippingSimulated = false;
+        var deliveryStandardValue = null;
+        var deliveryExpressValue = 55;
+
+        function openDeliveryModal() {
+          if (!deliveryModal) return;
+          deliveryModal.style.display = 'flex';
+          if (deliveryStepUser && deliveryStepSimulation) {
+            deliveryStepUser.style.display = 'block';
+            deliveryStepSimulation.style.display = 'none';
+          }
+        }
+
+        function closeDeliveryModal() {
+          if (!deliveryModal) return;
+          deliveryModal.style.display = 'none';
+        }
+
+        if (deliveryClose) {
+          deliveryClose.addEventListener('click', function () {
+            closeDeliveryModal();
+          });
+        }
+        if (deliveryModal) {
+          deliveryModal.addEventListener('click', function (e) {
+            if (e.target === deliveryModal) {
+              closeDeliveryModal();
+            }
+          });
+        }
+
+        function onlyDigits(value) {
+          return (value || '').replace(/\D/g, '');
+        }
+
+        function formatCpfInput(input) {
+          if (!input) return;
+          var digits = onlyDigits(input.value).slice(0, 11);
+          var formatted = '';
+          if (digits.length <= 3) {
+            formatted = digits;
+          } else if (digits.length <= 6) {
+            formatted = digits.slice(0, 3) + '.' + digits.slice(3);
+          } else if (digits.length <= 9) {
+            formatted = digits.slice(0, 3) + '.' + digits.slice(3, 6) + '.' + digits.slice(6);
+          } else {
+            formatted = digits.slice(0, 3) + '.' + digits.slice(3, 6) + '.' + digits.slice(6, 9) + '-' + digits.slice(9);
+          }
+          input.value = formatted;
+        }
+
+        function formatPhoneInput(input) {
+          if (!input) return;
+          var digits = onlyDigits(input.value).slice(0, 11);
+          var formatted = '';
+          if (!digits.length) {
+            input.value = '';
+            return;
+          }
+          if (digits.length <= 2) {
+            formatted = '(' + digits;
+          } else if (digits.length <= 6) {
+            formatted = '(' + digits.slice(0, 2) + ') ' + digits.slice(2);
+          } else if (digits.length <= 10) {
+            // telefone fixo (2 + 4 + 4)
+            formatted = '(' + digits.slice(0, 2) + ') ' + digits.slice(2, 6) + '-' + digits.slice(6);
+          } else {
+            // celular (2 + 5 + 4)
+            formatted = '(' + digits.slice(0, 2) + ') ' + digits.slice(2, 7) + '-' + digits.slice(7);
+          }
+          input.value = formatted;
+        }
+
+        if (deliveryCpf) {
+          deliveryCpf.addEventListener('input', function () {
+            formatCpfInput(deliveryCpf);
+          });
+        }
+
+        if (deliveryPhone) {
+          deliveryPhone.addEventListener('input', function () {
+            formatPhoneInput(deliveryPhone);
+          });
+        }
+
+        // Auto-preenchimento de endereço via CEP (API /api/cep em produção)
+        if (deliveryCep) {
+          deliveryCep.addEventListener('blur', function () {
+            var cepDigits = onlyDigits(deliveryCep.value);
+            if (cepDigits.length !== 8) {
+              return;
+            }
+            var apiUrl = (window.location.origin || '') + '/api/cep?cep=' + encodeURIComponent(cepDigits);
+            fetch(apiUrl)
+              .then(function (r) { return r.json(); })
+              .then(function (data) {
+                if (!data || !data.ok) return;
+                if (deliveryStreet && data.street) {
+                  deliveryStreet.value = data.street;
+                }
+                if (deliveryNeighborhood && data.neighborhood) {
+                  deliveryNeighborhood.value = data.neighborhood;
+                }
+                if (deliveryCity && data.city) {
+                  deliveryCity.value = data.city;
+                }
+                if (deliveryState && data.state) {
+                  deliveryState.value = data.state;
+                }
+              })
+              .catch(function () {
+                // silencioso
+              });
+          });
+        }
+
+        if (deliveryNext) {
+          deliveryNext.addEventListener('click', function () {
+            var name = (deliveryName && deliveryName.value || '').trim();
+            var cpfDigits = onlyDigits(deliveryCpf && deliveryCpf.value);
+            var phoneDigits = onlyDigits(deliveryPhone && deliveryPhone.value);
+
+            var valid =
+              name.length > 3 &&
+              cpfDigits.length === 11 &&
+              (phoneDigits.length === 10 || phoneDigits.length === 11);
+
+            if (!valid) {
+              if (deliveryError) deliveryError.style.display = 'block';
+              return;
+            }
+            if (deliveryError) deliveryError.style.display = 'none';
+            if (deliveryStepUser && deliveryStepSimulation) {
+              deliveryStepUser.style.display = 'none';
+              deliveryStepSimulation.style.display = 'block';
+            }
+          });
+        }
+
+        if (deliveryFinish) {
+          deliveryFinish.addEventListener('click', function () {
+            var cepDigits = onlyDigits(deliveryCep && deliveryCep.value);
+            var street = (deliveryStreet && deliveryStreet.value || '').trim();
+            var number = (deliveryNumber && deliveryNumber.value || '').trim();
+            var neighborhood = (deliveryNeighborhood && deliveryNeighborhood.value || '').trim();
+            var city = (deliveryCity && deliveryCity.value || '').trim();
+            var state = (deliveryState && deliveryState.value || '').trim().toUpperCase();
+
+            var addressValid =
+              cepDigits.length === 8 &&
+              street.length > 2 &&
+              number.length > 0 &&
+              neighborhood.length > 2 &&
+              city.length > 2 &&
+              state.length === 2;
+
+            if (!addressValid) {
+              if (deliveryAddressError) deliveryAddressError.style.display = 'block';
+              return;
+            }
+
+            if (deliveryAddressError) deliveryAddressError.style.display = 'none';
+
+            // Primeiro clique: simular entrega e mostrar opções
+            if (!deliveryShippingSimulated) {
+              var standardValues = [12, 14, 16, 18, 20, 22, 24, 26];
+              deliveryStandardValue =
+                standardValues[Math.floor(Math.random() * standardValues.length)];
+              deliveryExpressValue = 55;
+
+              var standardText =
+                'Entrega padrão: R$ ' + deliveryStandardValue.toFixed(2).replace('.', ',') + ' — entre 7 e 16 dias';
+              var expressText =
+                'Entrega rápida: R$ ' +
+                deliveryExpressValue.toFixed(2).replace('.', ',') +
+                ' (prioritária) — em até 3 dias';
+
+              if (deliveryShippingStandard) deliveryShippingStandard.textContent = standardText;
+              if (deliveryShippingExpress) deliveryShippingExpress.textContent = expressText;
+              if (deliveryShippingBox) deliveryShippingBox.style.display = 'block';
+              if (deliveryShippingChoiceError) deliveryShippingChoiceError.style.display = 'none';
+
+              deliveryShippingSimulated = true;
+              if (deliveryFinish) deliveryFinish.textContent = 'Confirmar entrega';
+              return;
+            }
+
+            // Segundo clique: confirmar opção escolhida
+            var chosen = null;
+            if (deliveryShippingStandardChoice && deliveryShippingStandardChoice.checked) {
+              chosen = 'padrão';
+            } else if (deliveryShippingExpressChoice && deliveryShippingExpressChoice.checked) {
+              chosen = 'rápida';
+            }
+
+            if (!chosen) {
+            if (deliveryShippingChoiceError) {
+              deliveryShippingChoiceError.style.display = 'block';
+            }
+            return;
+            }
+
+            if (deliveryShippingChoiceError) {
+              deliveryShippingChoiceError.style.display = 'none';
+            }
+
+            // Atualiza valores de frete/total e resumo do Pix
+            var chosenValue =
+              chosen === 'padrão' ? deliveryStandardValue : deliveryExpressValue;
+            freightAmountCents = Math.round((chosenValue || 0) * 100);
+            totalAmountCents = productAmountCents + freightAmountCents;
+            window.__pixAmountCents = totalAmountCents;
+
+            if (pixSummaryProduct && pixSummaryFreight && pixSummaryTotal) {
+              pixSummaryProduct.textContent = formatBRL(productAmountCents);
+              pixSummaryFreight.textContent = formatBRL(freightAmountCents);
+              pixSummaryTotal.textContent = formatBRL(totalAmountCents);
+            }
+
+            // Fecha o modal de entrega e abre o modal de pagamento Pix
+            closeDeliveryModal();
+            if (typeof openPixModal === 'function') {
+              openPixModal();
+            }
+            // Tenta gerar automaticamente o Pix Paradise para o valor total
+            if (typeof handlePixClick === 'function' && pixButtonPix) {
+              handlePixClick.call(pixButtonPix);
+            } else if (typeof handlePixClick === 'function' && pixButtonBuy) {
+              handlePixClick.call(pixButtonBuy);
+            }
+          });
+        }
+
+        if (pixButtonBuy) {
+          pixButtonBuy.addEventListener('click', function () {
+            openDeliveryModal();
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
+
