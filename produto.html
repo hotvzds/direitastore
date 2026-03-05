@@ -455,7 +455,6 @@
     <footer>
       <span>© <span id="year"></span> Loja Brasil. Todos os direitos reservados.</span>
     </footer>
-    <script src="/node_modules/cep-promise/dist/cep-promise-browser.js"></script>
     <script>
       (function () {
         function getParam(name) {
@@ -827,17 +826,18 @@
           });
         }
 
-        // Auto-preenchimento de endereço via CEP (uso direto do bundle browser cep-promise)
-        if (deliveryCep && window.cep) {
+        // Auto-preenchimento de endereço via CEP (API /api/cep em produção)
+        if (deliveryCep) {
           deliveryCep.addEventListener('blur', function () {
             var cepDigits = onlyDigits(deliveryCep.value);
             if (cepDigits.length !== 8) {
               return;
             }
-            window
-              .cep(cepDigits)
+            var apiUrl = (window.location.origin || '') + '/api/cep?cep=' + encodeURIComponent(cepDigits);
+            fetch(apiUrl)
+              .then(function (r) { return r.json(); })
               .then(function (data) {
-                if (!data) return;
+                if (!data || !data.ok) return;
                 if (deliveryStreet && data.street) {
                   deliveryStreet.value = data.street;
                 }
