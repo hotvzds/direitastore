@@ -455,6 +455,7 @@
     <footer>
       <span>© <span id="year"></span> Loja Brasil. Todos os direitos reservados.</span>
     </footer>
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@master/qrcode.min.js"></script>
     <script>
       (function () {
         function getParam(name) {
@@ -689,15 +690,45 @@
               var qrImg = pix.qrcode || null;
               var qrText = pix.qrcodeText || '';
 
+              pixText.value = qrText || '';
+
               if (qrImg) {
                 pixImg.src = qrImg;
                 pixImg.style.display = 'block';
                 pixFallback.style.display = 'none';
+              } else if (qrText && typeof QRCode !== 'undefined') {
+                var tempDiv = document.createElement('div');
+                tempDiv.style.cssText = 'position:absolute;left:-9999px;width:220px;height:220px;';
+                document.body.appendChild(tempDiv);
+                try {
+                  new QRCode(tempDiv, { text: qrText, width: 220, height: 220, colorDark: '#000000', colorLight: '#ffffff' });
+                  var applyGeneratedQr = function () {
+                    var genImg = tempDiv.querySelector('img');
+                    if (genImg && genImg.src) {
+                      pixImg.src = genImg.src;
+                      pixImg.style.display = 'block';
+                      pixFallback.style.display = 'none';
+                    } else {
+                      pixImg.style.display = 'none';
+                      pixFallback.style.display = 'block';
+                    }
+                    if (tempDiv.parentNode) {
+                      document.body.removeChild(tempDiv);
+                    }
+                  };
+                  setTimeout(applyGeneratedQr, 50);
+                } catch (e) {
+                  pixImg.style.display = 'none';
+                  pixFallback.style.display = 'block';
+                  if (tempDiv.parentNode) {
+                    document.body.removeChild(tempDiv);
+                  }
+                }
               } else {
                 pixImg.style.display = 'none';
                 pixFallback.style.display = 'block';
               }
-              pixText.value = qrText || '';
+
               if (!qrImg && !qrText) {
                 pixStatus.textContent = 'Pix gerado, mas a API não retornou QR/código. Confira PARADISE_API_KEY e o formato da resposta da Paradise na Vercel.';
               } else {
